@@ -25,10 +25,13 @@ check_device() {
     fi
     
     echo "=== Checking device: $DEVICE ==="
-    
+
+    IDENTIFICATION=$(smartctl -a "$DEVICE" | grep -A2 'Model Family')
     SMART_HOURS=$(smartctl -a "$DEVICE" | awk '/Power_On_Hours/{print $10}' | head -n 1)
     FARM_HOURS=$(smartctl -l farm "$DEVICE" | awk '/Power on Hours:/{print $4}' | head -n 1)
     
+    echo "$IDENTIFICATION"
+
     # Check if FARM hours are available
     if [ -z "$FARM_HOURS" ]; then
         echo "FARM data not available - likely not a Seagate drive"
